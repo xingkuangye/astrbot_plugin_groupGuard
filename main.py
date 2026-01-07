@@ -24,6 +24,7 @@ class MyPlugin(Star):
         self.monitor_groups = [str(g) for g in config.get("monitor_groups", []) or []]
         self.detect_groups = [str(g) for g in config.get("target_groups", []) or []]
 
+
     def get_value(obj, key, default=None):
         try:
             if isinstance(obj, dict):
@@ -31,6 +32,7 @@ class MyPlugin(Star):
             return getattr(obj, key, default)
         except Exception:
             return default
+
 
     @filter.platform_adapter_type(PlatformAdapterType.AIOCQHTTP)
     @filter.event_message_type(filter.EventMessageType.ALL, priority=10)
@@ -41,7 +43,7 @@ class MyPlugin(Star):
         if post_type == "request" and get_value(raw_message, "request_type") == "group":
             group_id = get_value(raw_message, "group_id")
             user_id = get_value(raw_message, "user_id")
-            if str(group_id) not in self.monitor_groups: return none
+            if str(group_id) not in self.monitor_groups: return None
             logger.debug(f"收到用户 {user_id} 加群 {group_id} 的申请, 开始检查是否允许通过")
             # 检查申请人是否在目标群中
             client = event.bot
@@ -53,6 +55,3 @@ class MyPlugin(Star):
                     await client.api.call_action('set_group_add_request', flag=get_value(raw_message, 'flag'), sub_type='add', approve=False, reason=f"您已在群 {target_group} 中，请不要重复加群。")
                     return None
             logger.info(f"用户 {user_id} 不在任何目标群中，将跳过处理")
-
-    async def terminate(self):
-        """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
