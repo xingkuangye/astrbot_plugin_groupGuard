@@ -17,22 +17,21 @@ from astrbot.api.platform import MessageType
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.core.star.filter.platform_adapter_type import PlatformAdapterType
 
-@register("helloworld", "YourName", "一个简单的 Hello World 插件", "1.0.0")
+def get_value(obj, key, default=None):
+    try:
+        if isinstance(obj, dict):
+            return obj.get(key, default)
+        return getattr(obj, key, default)
+    except Exception:
+            return default
+
+@register("groupGuard", "wuyufeng9960", "防重复加群", "0.6.0")
 class MyPlugin(Star):
+
     def __init__(self, context: Context, config: dict = None):
         super().__init__(context)
         self.monitor_groups = [str(g) for g in config.get("monitor_groups", []) or []]
         self.detect_groups = [str(g) for g in config.get("target_groups", []) or []]
-
-
-    def get_value(obj, key, default=None):
-        try:
-            if isinstance(obj, dict):
-                return obj.get(key, default)
-            return getattr(obj, key, default)
-        except Exception:
-            return default
-
 
     @filter.platform_adapter_type(PlatformAdapterType.AIOCQHTTP)
     @filter.event_message_type(filter.EventMessageType.ALL, priority=10)
