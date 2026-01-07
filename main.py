@@ -52,9 +52,10 @@ class MyPlugin(Star):
                         member_status = {}
                         member_status = await client.api.call_action('get_group_member_info', group_id=int(target_group), user_id=int(user_id))
                     except Exception as e:
-                        logger.info(f"用户 {user_id} 已在目标群 {target_group} 中，将拒绝加群申请")
-                        await client.api.call_action('set_group_add_request', flag=get_value(raw_message, 'flag'), sub_type='add', approve=False, reason=f"您已在群 {target_group} 中，请不要重复加群。")
-                        return None
+                        continue
+                    logger.info(f"用户 {user_id} 已在目标群 {target_group} 中，将拒绝加群申请")
+                    await client.api.call_action('set_group_add_request', flag=get_value(raw_message, 'flag'), sub_type='add', approve=False, reason=f"您已在群 {target_group} 中，请不要重复加群。")
+                    return None
                 logger.info(f"用户 {user_id} 不在任何目标群中，将跳过处理")
             except Exception as e:
                 logger.error(f"处理加群申请时出错: {e}\n{traceback.format_exc()}")
