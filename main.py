@@ -49,6 +49,7 @@ class MyPlugin(Star):
             try:
                 for target_group in self.detect_groups:
                     member_status = await client.api.call_action('get_group_member_info', group_id=int(target_group), user_id=int(user_id))
+                    rtcode = -1
                     rtcode = member_status.get('retcode', rtcode)
                     if rtcode == 0:
                         logger.info(f"用户 {user_id} 已在目标群 {target_group} 中，将拒绝加群申请")
