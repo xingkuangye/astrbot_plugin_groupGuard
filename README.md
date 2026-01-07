@@ -1,9 +1,24 @@
-# helloworld
+# astrbot_plugin_groupGuard
 
-AstrBot 插件模板
+## 功能描述
 
-A template plugin for AstrBot plugin feature
+**groupGuard** 是一个 Astrbot 插件，用于群组管理和安全防护。
 
-# 支持
+### 主要功能
 
-[帮助文档](https://astrbot.app)
+- **群组保护** - 提供基础的群组安全管理
+- **成员管理** - 管理群组成员权限和状态
+- **消息过滤** - 过滤和拦截不当内容
+- **日志记录** - 记录群组重要事件
+
+## 安装
+
+将插件放在 Astrbot 的 `plugins` 目录下即可。
+
+## 使用
+
+配置插件设置后，插件将自动运行。
+
+## 许可证
+
+MIT
