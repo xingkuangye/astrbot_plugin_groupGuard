@@ -1,20 +1,9 @@
 import asyncio
-import time
 import traceback
-import json
-from pathlib import Path
-from typing import List, Dict
-import aiohttp
-import os
-import shutil
 
 from astrbot.api import logger
-from astrbot.api.star import StarTools
-from astrbot.api import message_components as Comp
 from astrbot.api.star import Context, Star, register
-from astrbot.core.message.message_event_result import MessageChain
-from astrbot.api.platform import MessageType
-from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
+from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.core.star.filter.platform_adapter_type import PlatformAdapterType
 
 def get_value(obj, key, default=None):
