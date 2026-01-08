@@ -25,7 +25,7 @@ def get_value(obj, key, default=None):
     except Exception:
             return default
 
-@register("groupGuard", "wuyufeng9960", "防重复加群", "0.6.0")
+@register("groupGuard", "wuyufeng9960", "防重复加群", "0.7.0")
 class MyPlugin(Star):
 
     def __init__(self, context: Context, config: dict = None):
@@ -71,7 +71,7 @@ class MyPlugin(Star):
                                 except Exception:
                                     continue
                     except Exception as e:
-                        logger.debug(f"检查用户 {user_id} 在群 {target_group} 中时出错: {e}") 
+                        logger.warn(f"检查用户 {user_id} 在群 {target_group} 中时出错: {e}") 
                 logger.info(f"用户 {user_id} 不在任何目标群中，将跳过处理")
             except Exception as e:
                 logger.error(f"处理加群申请时出错: {e}\n{traceback.format_exc()}")

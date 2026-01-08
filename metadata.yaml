@@ -1,6 +1,6 @@
 name: astrbot_plugin_groupGuard
 display_name: 防重复加群
 desc: 自动拒绝已加入其他某个群的成员加群
-version: v0.6.0
+version: v0.7.0
 author: 星星旁の旷野
 repo: https://github.com/wuyufeng9960/astrbot_plugin_groupGuard
