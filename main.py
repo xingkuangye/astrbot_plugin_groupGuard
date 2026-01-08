@@ -42,6 +42,7 @@ class MyPlugin(Star):
         post_type = get_value(raw_message, "post_type")
        
         if post_type == "request" and get_value(raw_message, "request_type") == "group":
+            logger.debug(f"收到加群请求事件，将由本插件处理")
             group_id = get_value(raw_message, "group_id")
             user_id = get_value(raw_message, "user_id")
            
@@ -65,7 +66,9 @@ class MyPlugin(Star):
                             members = resp
 
                         if members:
+
                             for m in members:
+                                
                                 gid_user_id = get_value(m, 'group_user_id', None) or get_value(m, 'user_id', None)
                                 if gid_user_id is None:
                                     continue
@@ -77,12 +80,20 @@ class MyPlugin(Star):
                                         logger.info(f"用户 {user_id} 已在目标群 {target_group} 中，将拒绝加群申请")
                                         
                                         try:
+                                            
+                                            await asyncio.sleep(1)
                                             await client.api.call_action('set_group_add_request', flag=get_value(raw_message, 'flag'), approve=False, reason=f"您已在群 {target_group} 中，请不要重复加群。")
-                                        except Exception as e:
-                                            logger.error(f"拒绝用户 {user_id} 加群申请时出错，详情请查询日志")
-                                            if self.alert_groups:
-                                                await client.api.call_action('send_group_msg', group_id=int(self.alert_groups), message=f"拒绝用户 {user_id} 加群申请时出错: {e}")
                                         
+                                        except Exception as e:
+                                            
+                                            logger.warn(f"拒绝用户 {user_id} 加群申请时出错，详情请查询日志")
+                                            
+                                            if self.alert_groups:
+                                                try:
+                                                    await client.api.call_action('send_group_msg', group_id=int(self.alert_groups), message=f"拒绝用户 {user_id} 加群申请时出错，详情请查询日志")
+                                                except Exception as e2:
+                                                    logger.warn(f"发送提示信息到群 {self.alert_groups} 时出错: {e2}")
+
                                         # 发送提示信息到指定群
                                         if self.alert_groups:
                                             try:
@@ -95,15 +106,33 @@ class MyPlugin(Star):
 
                                 # 处理比较时的异常
                                 except Exception as e:
+                                    
+                                    if self.alert_groups:
+                                        try:
+                                            await client.api.call_action('send_group_msg', group_id=int(self.alert_groups), message=f"比较用户 ID 时出错，详情请查询日志")
+                                        except Exception as e2:
+                                            logger.warn(f"发送提示信息到群 {self.alert_groups} 时出错: {e2}")
+                                    
                                     logger.error(f"比较用户 ID 时出错: {e}")
                                 
                     except Exception as e:
-                        yield event.plain_result(f"检查用户 {user_id} 在群 {target_group} 中时出错，具体信息请查阅日志", to_groups=self.alert_groups)
+
+                        if self.alert_groups:
+                            try:
+                                await client.api.call_action('send_group_msg', group_id=int(self.alert_groups), message=f"检查用户 {user_id} 在群 {target_group} 中时出错，详情请查询日志")
+                            except Exception as e2:
+                                logger.warn(f"发送提示信息到群 {self.alert_groups} 时出错: {e2}")
+                        
                         logger.warn(f"检查用户 {user_id} 在群 {target_group} 中时出错: {e}") 
                 
                 logger.info(f"用户 {user_id} 不在任何目标群中，将跳过处理")
             
             except Exception as e:
+                if self.alert_groups:
+                    try:
+                        await client.api.call_action('send_group_msg', group_id=int(self.alert_groups), message=f"处理加群申请时出错，详情请查询日志")
+                    except Exception as e2:
+                        logger.warn(f"发送提示信息到群 {self.alert_groups} 时出错: {e2}")
                 logger.error(f"处理加群申请时出错: {e}\n{traceback.format_exc()}")
         
         return
