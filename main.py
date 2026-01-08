@@ -45,7 +45,9 @@ class MyPlugin(Star):
             group_id = get_value(raw_message, "group_id")
             user_id = get_value(raw_message, "user_id")
            
-            if str(group_id) not in self.monitor_groups: return None
+            if str(group_id) not in self.monitor_groups: 
+                return
+
             logger.debug(f"收到用户 {user_id} 加群 {group_id} 的申请, 开始检查是否允许通过")
           
             # 检查申请人是否在目标群中
@@ -89,7 +91,7 @@ class MyPlugin(Star):
                                                 logger.warn(f"发送提示信息到群 {self.alert_groups} 时出错: {e}")
                                         
                                         # 结束检查
-                                        return None
+                                        return
 
                                 # 处理比较时的异常
                                 except Exception as e:
@@ -104,4 +106,4 @@ class MyPlugin(Star):
             except Exception as e:
                 logger.error(f"处理加群申请时出错: {e}\n{traceback.format_exc()}")
         
-        return None
+        return
