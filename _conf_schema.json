@@ -9,9 +9,9 @@
         "description": "填写目标群号列表，用户已在这些群中则拒绝加群申请。",
         "default": []
     },
-    "alert_groups": {
+    "alert_group": {
         "type": "int",
         "description": "填写需要接收提示信息的群号。",
-        "default": []
+        "default": 123456
     }
 }

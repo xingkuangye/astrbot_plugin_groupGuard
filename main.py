@@ -25,14 +25,14 @@ def get_value(obj, key, default=None):
     except Exception:
             return default
 
-@register("groupGuard", "星星旁の旷野", "防重复加群", "0.9.0")
+@register("groupGuard", "星星旁の旷野", "防重复加群", "1.0.0")
 class MyPlugin(Star):
 
     def __init__(self, context: Context, config: dict = None):
         super().__init__(context)
         self.monitor_groups = [str(g) for g in config.get("monitor_groups", []) or []]
         self.detect_groups = [str(g) for g in config.get("target_groups", []) or []]
-        self.alert_groups = config.get("alert_groups")
+        self.alert_groups = config.get("alert_group")
 
     @filter.platform_adapter_type(PlatformAdapterType.AIOCQHTTP)
     @filter.event_message_type(filter.EventMessageType.ALL, priority=10)
@@ -68,7 +68,7 @@ class MyPlugin(Star):
                         if members:
 
                             for m in members:
-                                
+
                                 gid_user_id = get_value(m, 'group_user_id', None) or get_value(m, 'user_id', None)
                                 if gid_user_id is None:
                                     continue
